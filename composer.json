@@ -1,0 +1,18 @@
+{
+    "name": "pixelpolishers/resolver-builder",
+    "description": "Builds the package file and creates a web interface to browse packages.",
+    "license": "MIT",
+    "require": {
+        "composer/semver": "^1.2",
+        "justinrainbow/json-schema": "^1.6",
+        "padraic/phar-updater": "^1.0",
+        "seld/jsonlint": "^1.4",
+        "symfony/console": "^3.0",
+        "twig/twig": "^1.24"
+    },
+    "autoload": {
+        "psr-4": {
+            "PixelPolishers\\ResolverBuilder\\": "src/"
+        }
+    }
+}
