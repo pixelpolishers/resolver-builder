@@ -3,8 +3,6 @@
 namespace PixelPolishers\ResolverBuilder\Command;
 
 use Composer\Semver\VersionParser;
-use JsonSchema\RefResolver;
-use JsonSchema\Uri\UriRetriever;
 use JsonSchema\Validator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
