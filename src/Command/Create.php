@@ -4,7 +4,6 @@ namespace PixelPolishers\ResolverBuilder\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
@@ -28,12 +27,16 @@ class Create extends Command
         $this->read($helper, $input, $output, 'Name', $data, 'name', true);
         $this->read($helper, $input, $output, 'Description', $data, 'description', false);
         $this->read($helper, $input, $output, 'Homepage', $data, 'homepage', true);
-        $this->read($helper, $input, $output, 'Package target', $data, 'package_target', false, 'public/');
-        $this->read($helper, $input, $output, 'Web target', $data, 'web_target', false, 'public/');
-        $this->read($helper, $input, $output, 'Web template', $data, 'web_template', true, 'satis');
+        $this->read($helper, $input, $output, 'Output directory', $data['output'], 'target', false, 'public/');
+        $this->read($helper, $input, $output, 'Output template', $data['output'], 'template', false, 'satis');
 
-        $data['auth'] = [];
+        $data['sync_auth'] = [];
         $data['packages'] = [];
+
+        $hasGithubKey = $this->askQuestion($helper, $input, $output, 'Do you have a GitHub OAuth key?');
+        if ($hasGithubKey) {
+            $this->read($helper, $input, $output, 'Please enter your GitHub key', $data['sync_auth'], 'github', true);
+        }
 
         $path = getcwd() . DIRECTORY_SEPARATOR . 'resolver-builder.json';
 
@@ -44,15 +47,20 @@ class Create extends Command
         return 0;
     }
 
-    private function askForPermission($helper, $input, $output, $path)
+    private function askQuestion($helper, $input, $output, $label)
     {
         $question = new ConfirmationQuestion(
-            'Are you sure you want to overwrite "' . $path . '"? (Y/n) ',
+            $label . ' (y/n) ',
             false,
-            '/^Y/'
+            '/^y/i'
         );
 
         return $helper->ask($input, $output, $question);
+    }
+
+    private function askForPermission($helper, $input, $output, $path)
+    {
+        return $this->askQuestion($helper, $input, $output, 'Are you sure you want to overwrite "' . $path . '"?');
     }
 
     private function read($helper, $input, $output, $label, &$data, $key, $required, $default = null)
