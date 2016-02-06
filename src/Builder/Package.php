@@ -16,11 +16,6 @@ class Package implements BuilderInterface
 
     public function build($outputPath)
     {
-        $outputPath = rtrim($outputPath) . '/resolver-packages.json';
-
-        $directory = dirname($outputPath);
-        FileSystem::ensureDirectory($directory);
-
         $packages = [];
 
         foreach ($this->packages as $package) {
@@ -39,6 +34,11 @@ class Package implements BuilderInterface
             'packages' => $packages,
         ];
 
-        file_put_contents($outputPath, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        FileSystem::ensureDirectory($outputPath);
+
+        file_put_contents(
+            rtrim($outputPath) . '/resolver-packages.json',
+            json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
+        );
     }
 }

@@ -3,11 +3,13 @@
 namespace PixelPolishers\ResolverBuilder\Command;
 
 use Composer\Semver\VersionParser;
+use Enrise\Uri;
 use Exception;
 use PixelPolishers\ResolverBuilder\Driver\DriverInterface;
 use PixelPolishers\ResolverBuilder\Driver\Github;
 use PixelPolishers\ResolverBuilder\Builder\Html as HtmlBuilder;
 use PixelPolishers\ResolverBuilder\Builder\Package as PackageBuilder;
+use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -50,7 +52,7 @@ class Build extends Command
         $output->writeln('Building resolver-packages.json');
 
         $packageBuilder = new PackageBuilder($packages);
-        $packageBuilder->build($config['package_target']);
+        $packageBuilder->build($config['output']['target']);
 
         if ($input->getOption('no-web')) {
             return;
@@ -59,7 +61,7 @@ class Build extends Command
         $output->writeln('Building html output');
 
         $webBuilder = new HtmlBuilder($packages, $config);
-        $webBuilder->build($config['web_target']);
+        $webBuilder->build($config['output']['target']);
     }
 
     private function readConfiguration(InputInterface $input, OutputInterface $output)
@@ -67,7 +69,7 @@ class Build extends Command
         $path = getcwd() . DIRECTORY_SEPARATOR . 'resolver-builder.json';
         if (!is_file($path) || !is_readable($path)) {
             $output->writeln(sprintf('<error>Missing configuration file "%s".</error>', $path));
-            return 1;
+            return null;
         }
 
         $data = file_get_contents($path);
@@ -78,14 +80,25 @@ class Build extends Command
             return null;
         }
 
-        if (!array_key_exists('package_target', $config)) {
-            $output->writeln('<error>Missing "package_target" configuration option.</error>');
+        if (!array_key_exists('output', $config)) {
+            $output->writeln('<error>Missing "output" configuration option.</error>');
             return null;
         }
 
-        if (!$input->getOption('no-web') && !array_key_exists('web_target', $config)) {
-            $output->writeln('<error>Missing "web_target" configuration option.</error>');
+        if (!array_key_exists('target', $config['output'])) {
+            $output->writeln('<error>Missing "target" configuration option in output configuration.</error>');
             return null;
+        }
+
+        $homepage = new Uri($config['homepage']);
+        if (!$homepage->isAbsolute() || $homepage->isSchemeless()) {
+            $output->writeln(sprintf('<error>The homepage "%s" is invalid.</error>', $config['homepage']));
+            return null;
+        }
+
+        $outputTarget = new Uri($config['output']['target']);
+        if ($outputTarget->isRelative()) {
+            $config['output']['target'] = getcwd() . '/' . ltrim($config['output']['target'], '/');
         }
 
         return $config;
@@ -95,12 +108,12 @@ class Build extends Command
     {
         switch ($package['type']) {
             case 'github':
-                $oauthToken = $config['auth']['github'];
+                $oauthToken = isset($config['sync_auth']['github']) ? $config['sync_auth']['github'] : null;
                 $driver = new Github($package['url'], $oauthToken);
                 break;
 
             default:
-                throw new \RuntimeException(sprintf('The package type "%s" is not supported.', $package['type']));
+                throw new RuntimeException(sprintf('The package type "%s" is not supported.', $package['type']));
         }
 
         return $driver;

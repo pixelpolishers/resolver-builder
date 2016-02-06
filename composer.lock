@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "bef7e603684d9671bec96c7ad6c99c04",
-    "content-hash": "b2102481d0e81f6b7ae2193c7a9e35b7",
+    "hash": "0c688c31ca3bb936fe57f8f9c4b932b5",
+    "content-hash": "b58ba4dc78878b939ad682f7a85e2a39",
     "packages": [
         {
             "name": "composer/semver",
@@ -68,6 +68,49 @@
                 "versioning"
             ],
             "time": "2015-11-10 11:17:42"
+        },
+        {
+            "name": "enrise/urihelper",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Enrise/UriHelper.git",
+                "reference": "b43b1ba2d12775339a14359c9b1c7d35cb88bba4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Enrise/UriHelper/zipball/b43b1ba2d12775339a14359c9b1c7d35cb88bba4",
+                "reference": "b43b1ba2d12775339a14359c9b1c7d35cb88bba4",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Enrise\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache 2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Rob Quist"
+                }
+            ],
+            "description": "A general URI helper class for PHP",
+            "homepage": "https://github.com/Enrise/UriHelper",
+            "keywords": [
+                "collections",
+                "types"
+            ],
+            "time": "2015-04-21 08:40:25"
         },
         {
             "name": "justinrainbow/json-schema",

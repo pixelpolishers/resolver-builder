@@ -19,7 +19,8 @@
         "padraic/phar-updater": "^1.0",
         "seld/jsonlint": "^1.4",
         "symfony/console": "^3.0",
-        "twig/twig": "^1.24"
+        "twig/twig": "^1.24",
+        "enrise/urihelper": "^1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.8"

@@ -2,6 +2,7 @@
 
 namespace PixelPolishers\ResolverBuilder\Builder;
 
+use Enrise\Uri;
 use PixelPolishers\ResolverBuilder\Utils\FileSystem;
 use Twig_Environment;
 use Twig_Loader_Filesystem;
@@ -19,14 +20,24 @@ class Html implements BuilderInterface
 
     public function build($outputPath)
     {
-        $directory = dirname($outputPath);
-        FileSystem::ensureDirectory($directory);
+        FileSystem::ensureDirectory($outputPath);
 
-        if (!is_dir($this->config['web_template'])) {
-            $this->config['web_template'] = __DIR__ . '/../../resources/templates/' . $this->config['web_template'];
+        $templateUri = new Uri($this->config['output']['template']);
+        if ($templateUri->isRelative()) {
+            $possibleAbsoluteTemplate = getcwd() . '/' . ltrim($this->config['output']['template'], '/');
+
+            if (is_dir($possibleAbsoluteTemplate)) {
+                $this->config['output']['template'] = $possibleAbsoluteTemplate;
+            } else {
+                $this->config['output']['template'] = sprintf(
+                    '%s/../../resources/templates/%s',
+                    __DIR__,
+                    $this->config['output']['template']
+                );
+            }
         }
 
-        $twig = new Twig_Environment(new Twig_Loader_Filesystem($this->config['web_template']));
+        $twig = new Twig_Environment(new Twig_Loader_Filesystem($this->config['output']['template']));
 
         $content = $twig->render('index.html.twig', [
             'name' => $this->config['name'],
