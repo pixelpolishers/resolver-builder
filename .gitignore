@@ -3,7 +3,6 @@ build/
 vendor/
 
 # Ignored files
-box.phar
 resolver-builder.phar
 resolver-builder.phar.pubkey
 resolver-builder.phar.version
