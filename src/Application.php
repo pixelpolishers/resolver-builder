@@ -4,6 +4,7 @@ namespace PixelPolishers\ResolverBuilder;
 
 use PixelPolishers\ResolverBuilder\Command\Build;
 use PixelPolishers\ResolverBuilder\Command\Create;
+use PixelPolishers\ResolverBuilder\Command\SelfUpdate;
 use PixelPolishers\ResolverBuilder\Command\Validate;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
@@ -51,6 +52,7 @@ class Application extends BaseApplication
         $commands = parent::getDefaultCommands();
         $commands[] = new Build();
         $commands[] = new Create();
+        $commands[] = new SelfUpdate();
         $commands[] = new Validate();
 
         return $commands;
