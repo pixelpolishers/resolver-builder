@@ -62,12 +62,12 @@
                                 <th>Releases</th>
                                 <td>
                                     {% for version in package.releases %}
-                                        {%- if version.distType -%}
-                                            <a href="{{ version.distUrl }}"
-                                               title="{{ version.distReference }}">{{ version.name }}</a>
+                                        {%- if version.dist.type -%}
+                                            <a href="{{ version.dist.url }}"
+                                               title="{{ version.dist.reference }}">{{ version.name }}</a>
                                         {%- else -%}
-                                            <a href="{{ version.sourceUrl }}"
-                                               title="{{ version.sourceReference }}">{{ version.name }}</a>
+                                            <a href="{{ version.source.url }}"
+                                               title="{{ version.source.reference }}">{{ version.name }}</a>
                                         {%- endif -%}
                                         {%- if not loop.last -%}, {% endif -%}
                                     {% endfor %}
