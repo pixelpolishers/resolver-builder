@@ -60,7 +60,9 @@ class Application extends BaseApplication
         $commands = parent::getDefaultCommands();
         $commands[] = new Build();
         $commands[] = new Create();
-        $commands[] = new SelfUpdate();
+        if (PHP_VERSION_ID >= 50600 && self::VERSION !== '@' . 'package_version' . '@') {
+            $commands[] = new SelfUpdate();
+        }
         $commands[] = new Validate();
 
         return $commands;
@@ -93,7 +95,7 @@ class Application extends BaseApplication
     private function checkNewerVersion()
     {
         // Splitted up the version string because we don't want it to be parsed when building :)
-        if (self::VERSION === '@' . 'package_version' . '@') {
+        if (PHP_VERSION_ID < 50600 || self::VERSION === '@' . 'package_version' . '@') {
             return false;
         }
 
