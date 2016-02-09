@@ -5,10 +5,11 @@ namespace PixelPolishers\ResolverBuilder\Command;
 use Composer\Semver\VersionParser;
 use Enrise\Uri;
 use Exception;
-use PixelPolishers\ResolverBuilder\Driver\DriverInterface;
-use PixelPolishers\ResolverBuilder\Driver\Github;
 use PixelPolishers\ResolverBuilder\Builder\Html as HtmlBuilder;
 use PixelPolishers\ResolverBuilder\Builder\Package as PackageBuilder;
+use PixelPolishers\ResolverBuilder\Driver\DriverInterface;
+use PixelPolishers\ResolverBuilder\Driver\Github;
+use PixelPolishers\ResolverBuilder\Package\Release;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -172,16 +173,12 @@ class Build extends Command
 
             $releases[] = [
                 'name' => $tag['name'],
-                'reference' => $tag['commit']['sha'],
                 'commit_url' => $commit['html_url'],
                 'author' => $commit['author'],
                 'committer' => $commit['committer'],
                 'message' => $commit['message'],
-                'source' => [
-                    'type' => 'git',
-                    'url' => $driver->getSshUrl(),
-                    'reference' => $tag['commit']['sha'],
-                ],
+                'dist' => $driver->getDistInformation($tag['commit']['sha']),
+                'source' => $driver->getSourceInformation($tag['commit']['sha']),
             ];
         }
 
@@ -225,11 +222,8 @@ class Build extends Command
                 'author' => $commit['author'],
                 'committer' => $commit['committer'],
                 'message' => $commit['message'],
-                'source' => [
-                    'type' => 'git',
-                    'url' => $driver->getSshUrl(),
-                    'reference' => $branch['commit']['sha'],
-                ],
+                'dist' => $driver->getDistInformation($branch['commit']['sha']),
+                'source' => $driver->getSourceInformation($branch['commit']['sha']),
             ];
         }
 

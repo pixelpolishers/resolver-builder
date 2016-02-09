@@ -42,7 +42,7 @@ class Html implements BuilderInterface
         $content = $twig->render('index.html.twig', [
             'name' => $this->config['name'],
             'description' => $this->config['description'],
-            'url' => $this->config['homepage'],
+            'url' => rtrim($this->config['homepage'], '/'),
             'packages' => $this->packages,
         ]);
 

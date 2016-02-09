@@ -71,19 +71,14 @@ class Github implements DriverInterface
         }
     }
 
-    public function getDist($identifier)
+    public function getDistInformation($reference)
     {
-        $url = sprintf('https://api.github.com/repos/%s/%s/zipball/%s', $this->owner, $this->repository, $identifier);
+        $url = sprintf('https://api.github.com/repos/%s/%s/zipball/%s', $this->owner, $this->repository, $reference);
 
-        return [
-            'type' => 'zip',
-            'url' => $url,
-            'reference' => $identifier,
-            'shasum' => '',
-        ];
+        return ['type' => 'zip', 'url' => $url, 'reference' => $reference];
     }
 
-    public function getSource($identifier)
+    public function getSourceInformation($reference)
     {
         if ($this->private) {
             $url = $this->getSshUrl();
@@ -91,7 +86,7 @@ class Github implements DriverInterface
             $url = $this->getUrl();
         }
 
-        return ['type' => 'git', 'url' => $url, 'reference' => $identifier];
+        return ['type' => 'git', 'url' => $url, 'reference' => $reference];
     }
 
     public function getCommit($reference)
@@ -122,13 +117,13 @@ class Github implements DriverInterface
         return $json ?: [];
     }
 
-    public function getResolverInformation($identifier)
+    public function getResolverInformation($reference)
     {
         $url = sprintf(
             'https://api.github.com/repos/%s/%s/contents/resolver.json?ref=%s',
             $this->owner,
             $this->repository,
-            urlencode($identifier)
+            urlencode($reference)
         );
 
         $json = $this->getContent($url);

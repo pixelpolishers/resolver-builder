@@ -25,6 +25,8 @@ class Package implements BuilderInterface
             foreach ($package['releases'] as $release) {
                 $packages[$name][$release['name']] = [
                     'time' => $release['committer']['date'],
+                    'message' => $release['message'],
+                    'dist' => $release['dist'],
                     'source' => $release['source'],
                 ];
             }
